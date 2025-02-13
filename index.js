@@ -1,15 +1,26 @@
+require('dotenv').config();
 const express = require('express');
-const { resolve } = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
-const port = 3010;
+const port = process.env.PORT || 3010;
+const mongoURI = process.env.MONGO_URI;
 
-app.use(express.static('static'));
+// Middleware
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.error(Error connecting to database: ${err.message}));
 
 app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+  res.send('Customer Management System Backend');
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(Server running at http://localhost:${port});
 });
